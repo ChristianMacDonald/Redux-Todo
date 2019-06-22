@@ -1,12 +1,31 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { removeTodo, toggleComplete } from '../actions';
+import './Todo.css';
 
-const TodoList = props => {
-    return (
-        <div>
-            {props.todos.map(todo => <div>{todo.value}</div>)}
-        </div>
-    );
+class TodoList extends React.Component {
+    handleDelete = event => {
+        this.props.removeTodo(parseInt(event.target.dataset.index));
+    }
+
+    handleToggleComplete = event => {
+        this.props.toggleComplete(parseInt(event.target.dataset.index));
+    }
+
+    render() {
+        return (
+            <div>
+                {this.props.todos.map((todo, index) => {
+                    return (
+                        <div key={index}>
+                            <span className={todo.completed ? 'completed' : ''} data-index={index} onClick={this.handleToggleComplete}>{todo.value}</span>
+                            <button data-index={index} onClick={this.handleDelete}>x</button>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
 }
 
 const mapStateToProps = state => {
@@ -15,4 +34,4 @@ const mapStateToProps = state => {
     };
 }
 
-export default connect(mapStateToProps, {})(TodoList);
+export default connect(mapStateToProps, { removeTodo, toggleComplete })(TodoList);
